@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp
+iostream
+-
+zconf.h
+-
+csignal
+-
+semaphore.h
+-
+cstring
+-
+iostream
+-
+
