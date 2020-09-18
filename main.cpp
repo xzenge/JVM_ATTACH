@@ -4,6 +4,7 @@
 #include <semaphore.h>
 #include <cstring>
 #include <iostream>
+#include "AttachListener.h"
 
 using namespace std;
 
@@ -72,6 +73,8 @@ void* signal(int signal_number, void* handler) {
 int main() {
     int pid = (int) getpid();
     cout << "main id=" << pid << endl;
+
+    AttachListener::init();
 
     signal_init_pd();
 

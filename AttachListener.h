@@ -15,10 +15,13 @@
 #include <sys/un.h>
 #include <sys/stat.h>
 #include <cstdio>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <sys/stat.h>
 
-extern int *__error(void);
-
-#define errno (*__error())
 #define RESTARTABLE(_cmd, _result) do { \
     _result = _cmd; \
   } while(((int)_result == -1) && (errno == 4))
@@ -30,26 +33,45 @@ extern int *__error(void);
 
 class AttachListener {
 private:
-    static int _listener;
-    static bool _has_path;
-    static char _path[UNIX_PATH_MAX];
-    static void set_path(char* path);
-    static void set_listener(int s);
 
 public:
-    static AttachOperation* dequeue();
+    static AttachOperation *dequeue();
+
     static int init();
-    static char* path();
-    static bool has_path();
-    static int listener();
-    static AttachOperation* read_request(int s);
-    static int write_fully(int s, char* buf, int len);
+
+    static AttachOperation *read_request(int s);
+
+    static int write_fully(int s, char *buf, int len);
+
     enum {
         ATTACH_PROTOCOL_VER = 1                     // protocol version
     };
     enum {
-        ATTACH_ERROR_BADVERSION     = 101           // error codes
+        ATTACH_ERROR_BADVERSION = 101           // error codes
     };
+    static int _listener;
+    static bool _has_path;
+    static char _path[UNIX_PATH_MAX];
+
+    static void set_path(char *path) {
+        if (path == NULL) {
+            _has_path = false;
+        } else {
+            strncpy(_path, path, UNIX_PATH_MAX);
+            _path[UNIX_PATH_MAX - 1] = '\0';
+            _has_path = true;
+        }
+    }
+
+    static void set_listener(int s) {
+        _listener = s;
+    }
+
+    static char *path() { return _path; }
+
+    static bool has_path() { return _has_path; }
+
+    static int listener() { return _listener; }
 };
 
 

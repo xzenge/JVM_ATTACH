@@ -42,31 +42,12 @@ public:
 };
 
 
-static int _listener;
-static bool _has_path;
-static char _path[UNIX_PATH_MAX];
+//static int _listener;
+//static bool _has_path;
+//static char _path[UNIX_PATH_MAX];
 int AttachListener::_listener = -1;
 char AttachListener::_path[UNIX_PATH_MAX];
 
-static void set_path(char *path) {
-    if (path == NULL) {
-        _has_path = false;
-    } else {
-        strncpy(_path, path, UNIX_PATH_MAX);
-        _path[UNIX_PATH_MAX - 1] = '\0';
-        _has_path = true;
-    }
-}
-
-static void set_listener(int s) {
-    _listener = s;
-}
-
-static char *path() { return _path; }
-
-static bool has_path() { return _has_path; }
-
-static int listener() { return _listener; }
 
 extern "C" {
 static void listener_cleanup() {
