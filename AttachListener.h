@@ -33,11 +33,11 @@
 
 class AttachListener {
 private:
-
+    static volatile bool _initialized;
 public:
     static AttachOperation *dequeue();
 
-    static void init();
+    static bool init();
 
     static int pd_init();
 
@@ -74,6 +74,10 @@ public:
     static bool has_path() { return _has_path; }
 
     static int listener() { return _listener; }
+
+    static bool is_initialized() { return _initialized; }
+
+    static void set_initialized() { _initialized = true; }
 };
 
 

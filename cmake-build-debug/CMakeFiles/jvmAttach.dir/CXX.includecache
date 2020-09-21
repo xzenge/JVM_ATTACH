@@ -25,6 +25,10 @@ cstdlib
 -
 errno.h
 -
+thread
+-
+iostream
+-
 
 /Users/xiangshi/Documents/workspace_c/jvmAttach/AttachListener.h
 AttachOperation.h

@@ -9,6 +9,10 @@ CMakeFiles/jvmAttach.dir/AttachOperation.cpp.o
  /Users/xiangshi/Documents/workspace_c/jvmAttach/AttachOperation.cpp
  /Users/xiangshi/Documents/workspace_c/jvmAttach/AttachOperation.h
 CMakeFiles/jvmAttach.dir/main.cpp.o
+ /Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp
+ /Users/xiangshi/Documents/workspace_c/jvmAttach/os.h
+CMakeFiles/jvmAttach.dir/os.cpp.o
  /Users/xiangshi/Documents/workspace_c/jvmAttach/AttachListener.h
  /Users/xiangshi/Documents/workspace_c/jvmAttach/AttachOperation.h
- /Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp
+ /Users/xiangshi/Documents/workspace_c/jvmAttach/os.cpp
+ /Users/xiangshi/Documents/workspace_c/jvmAttach/os.h

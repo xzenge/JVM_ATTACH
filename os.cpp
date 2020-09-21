@@ -30,14 +30,18 @@ static os_semaphore_t sig_sem;
  * 单独线程对pending_signals状态并进行相应处理
  */
 static void signal_thread_entry() {
+    cout << "enter signal_thread_entry" << endl;
     while (true){
         int sig;
         {
             sig = os::signal_wait();
+//            cout << "signal_thread_entry sig:" << sig << endl;
         }
         switch (sig) {
             case SIGBREAK: {
-                AttachListener::init();
+                if (AttachListener::init()) {
+                    continue;
+                }
             }
         }
 
@@ -51,7 +55,8 @@ void os::signal_init() {
     //初始化signal监听pending_signals
     os::signal_init_pd();
     //创建线程监听pending_signals状态并进行相应处理
-    std::thread t(&signal_thread_entry);
+    pthread_t tids;
+    int ret = pthread_create(&tids, NULL, reinterpret_cast<void *(*)(void *)>(signal_thread_entry), NULL);
     //注册signal处理器
     os::signal(SIGBREAK,os::user_handler());
 }
@@ -119,6 +124,10 @@ static int check_pending_signals(bool wait) {
                 return i;
             }
         }
+        if (!wait) {
+            return -1;
+        }
+        sleep(5);
     }
 }
 
@@ -131,14 +140,15 @@ int os::signal_wait() {
  * @param signal_number
  */
 void os::signal_notify(int signal_number) {
+    cout << "enter signal_notify sig:" << signal_number << endl;
     //将监听到的信号为竖为1
     //改操作应该为原子操作，确保不会被其他线程修改
     //JVM中混编平台相关汇编指令实现原子操作，演示代码中不研究相关实现
     pending_signals[signal_number] = 1;
 
-    for(int i = 0;i< NSIG + 1;i++){
-        cout << "i=" << i << " pending_signals= " << pending_signals[i] << endl;
-    }
+//    for(int i = 0;i< NSIG + 1;i++){
+//        cout << "i=" << i << " pending_signals= " << pending_signals[i] << endl;
+//    }
 //    ::SEM_POST(sig_sem);
     semaphore_signal(sig_sem);
 }

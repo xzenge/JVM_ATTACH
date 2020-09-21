@@ -16,5 +16,6 @@ int main() {
 
     os::signal_init();
 
+    while (true) {}
     return 0;
 }

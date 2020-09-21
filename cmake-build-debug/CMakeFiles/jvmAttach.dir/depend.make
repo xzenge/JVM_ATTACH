@@ -8,7 +8,11 @@ CMakeFiles/jvmAttach.dir/AttachListener.cpp.o: ../AttachOperation.h
 CMakeFiles/jvmAttach.dir/AttachOperation.cpp.o: ../AttachOperation.cpp
 CMakeFiles/jvmAttach.dir/AttachOperation.cpp.o: ../AttachOperation.h
 
-CMakeFiles/jvmAttach.dir/main.cpp.o: ../AttachListener.h
-CMakeFiles/jvmAttach.dir/main.cpp.o: ../AttachOperation.h
 CMakeFiles/jvmAttach.dir/main.cpp.o: ../main.cpp
+CMakeFiles/jvmAttach.dir/main.cpp.o: ../os.h
+
+CMakeFiles/jvmAttach.dir/os.cpp.o: ../AttachListener.h
+CMakeFiles/jvmAttach.dir/os.cpp.o: ../AttachOperation.h
+CMakeFiles/jvmAttach.dir/os.cpp.o: ../os.cpp
+CMakeFiles/jvmAttach.dir/os.cpp.o: ../os.h
 

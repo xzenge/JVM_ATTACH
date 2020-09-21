@@ -62,10 +62,12 @@ static AttachOperationFunctionInfo funcs[] = {
 };
 
 static void attach_listener_thread_entry() {
-
-    if (AttachListener::pd_init() != 0) {
+    int pdint = AttachListener::pd_init();
+    cout << "attach_listener_thread_entry pdint:" << pdint << endl;
+    if (pdint != 0) {
         return;
     }
+    AttachListener::set_initialized();
 
     for (;;) {
         AttachOperation* op = AttachListener::dequeue();
@@ -90,8 +92,29 @@ static void attach_listener_thread_entry() {
     }
 }
 
-void AttachListener::init() {
-    std::thread t(&attach_listener_thread_entry);
+volatile bool AttachListener::_initialized;
+
+bool AttachListener::init() {
+    if (is_initialized()) {
+        return false;               // initialized at startup or already initialized
+    }
+    char path[PATH_MAX + 1];
+    int ret;
+    struct stat st;
+
+    snprintf(path, PATH_MAX + 1, "%s/.attach_pid%d",
+             TEMP_PATH, getpid());
+    RESTARTABLE(::stat(path, &st), ret);
+    if (ret == 0) {
+        // simple check to avoid starting the attach mechanism when
+        // a bogus user creates the file
+        if (st.st_uid == geteuid()) {
+            pthread_t tids;
+            int ret = pthread_create(&tids, NULL, reinterpret_cast<void *(*)(void *)>(attach_listener_thread_entry), NULL);
+            return true;
+        }
+    }
+
 }
 
 //static int _listener;
@@ -133,14 +156,14 @@ int AttachListener::pd_init() {
     ::atexit(listener_cleanup);
 
     int n = snprintf(path, UNIX_PATH_MAX, "%s/.java_pid%d",
-                     TEMP_PATH, CURRENT_PROCESS_ID);
+                     TEMP_PATH, getpid());
     if (n < (int) UNIX_PATH_MAX) {
         n = snprintf(initial_path, UNIX_PATH_MAX, "%s.tmp", path);
     }
     if (n >= (int) UNIX_PATH_MAX) {
         return -1;
     }
-
+    cout << "path:" << path << endl;
     // create the listener socket
     listener = ::socket(PF_UNIX, SOCK_STREAM, 0);
     if (listener == -1) {
