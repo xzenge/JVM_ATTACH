@@ -108,11 +108,11 @@ bool AttachListener::init() {
     if (ret == 0) {
         // simple check to avoid starting the attach mechanism when
         // a bogus user creates the file
-        if (st.st_uid == geteuid()) {
+//        if (st.st_uid == geteuid()) {
             pthread_t tids;
             int ret = pthread_create(&tids, NULL, reinterpret_cast<void *(*)(void *)>(attach_listener_thread_entry), NULL);
             return true;
-        }
+//        }
     }
 
 }
