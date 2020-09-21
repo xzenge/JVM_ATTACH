@@ -52,7 +52,7 @@ struct AttachOperationFunctionInfo {
 };
 
 static int load_agent_library(AttachOperation* op) {
-    cout << "enter load_agent_library" << endl;
+    cout << " ********************  enter load_agent_library lib:" << op->arg(0)  << endl;
     return 0;
 }
 
@@ -63,7 +63,6 @@ static AttachOperationFunctionInfo funcs[] = {
 
 static void attach_listener_thread_entry() {
     int pdint = AttachListener::pd_init();
-    cout << "attach_listener_thread_entry pdint:" << pdint << endl;
     if (pdint != 0) {
         return;
     }
@@ -188,7 +187,7 @@ int AttachListener::pd_init() {
         if (res == 0) {
             // make sure the file is owned by the effective user and effective group
             // (this is the default on linux, but not on mac os)
-            RESTARTABLE(::chown(initial_path, geteuid(), getegid()), res);
+//            RESTARTABLE(::chown(initial_path, geteuid(), getegid()), res);
             if (res == 0) {
                 res = ::rename(initial_path, path);
             }
@@ -246,6 +245,7 @@ AttachOperation *AttachListener::dequeue() {
 }
 
 AttachOperation *AttachListener::read_request(int s) {
+    cout << "enter read_request" << endl;
     char ver_str[8];
     int expected_str_count = 2 + AttachOperation::arg_count_max;
     const int max_len = (sizeof(ver_str) + 1) + (AttachOperation::name_length_max + 1) +
@@ -273,13 +273,13 @@ AttachOperation *AttachListener::read_request(int s) {
                 // The first string is <ver> so check it now to
                 // check for protocol mis-match
                 if (str_count == 1) {
-                    if ((strlen(buf) != strlen(ver_str)) ||
-                        (atoi(buf) != ATTACH_PROTOCOL_VER)) {
-                        char msg[32];
-                        sprintf(msg, "%d\n", ATTACH_ERROR_BADVERSION);
-                        write_fully(s, msg, strlen(msg));
-                        return NULL;
-                    }
+//                    if ((strlen(buf) != strlen(ver_str)) ||
+//                        (atoi(buf) != ATTACH_PROTOCOL_VER)) {
+//                        char msg[32];
+//                        sprintf(msg, "%d\n", ATTACH_ERROR_BADVERSION);
+//                        write_fully(s, msg, strlen(msg));
+//                        return NULL;
+//                    }
                 }
             }
         }
