@@ -224,6 +224,33 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/jvmAttach.dir/build.make CMakeFiles/jvmAttach.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+os.o: os.cpp.o
+
+.PHONY : os.o
+
+# target to build an object file
+os.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jvmAttach.dir/build.make CMakeFiles/jvmAttach.dir/os.cpp.o
+.PHONY : os.cpp.o
+
+os.i: os.cpp.i
+
+.PHONY : os.i
+
+# target to preprocess a source file
+os.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jvmAttach.dir/build.make CMakeFiles/jvmAttach.dir/os.cpp.i
+.PHONY : os.cpp.i
+
+os.s: os.cpp.s
+
+.PHONY : os.s
+
+# target to generate assembly for a file
+os.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/jvmAttach.dir/build.make CMakeFiles/jvmAttach.dir/os.cpp.s
+.PHONY : os.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -242,6 +269,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... os.o"
+	@echo "... os.i"
+	@echo "... os.s"
 .PHONY : help
 
 

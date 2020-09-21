@@ -11,7 +11,10 @@
 #include <cstring>
 #include <cstdlib>
 #include <errno.h>
+#include <thread>
+#include <iostream>
 
+using namespace std;
 
 #define TEMP_PATH "/var/folders/qp/qtln82zj37l_rwmlwqrn9pzm0000gp/T"
 #define CURRENT_PROCESS_ID ""
@@ -41,11 +44,61 @@ public:
     }
 };
 
+typedef int (*AttachOperationFunction)(AttachOperation* op);
+
+struct AttachOperationFunctionInfo {
+    const char* name;
+    AttachOperationFunction func;
+};
+
+static int load_agent_library(AttachOperation* op) {
+    cout << "enter load_agent_library" << endl;
+    return 0;
+}
+
+static AttachOperationFunctionInfo funcs[] = {
+        { "load", load_agent_library },
+        { NULL,               NULL }
+};
+
+static void attach_listener_thread_entry() {
+
+    if (AttachListener::pd_init() != 0) {
+        return;
+    }
+
+    for (;;) {
+        AttachOperation* op = AttachListener::dequeue();
+        if (op == NULL) {
+            return;   // dequeue failed or shutdown
+        }
+
+        // find the function to dispatch too
+        AttachOperationFunctionInfo* info = NULL;
+        for (int i=0; funcs[i].name != NULL; i++) {
+            const char* name = funcs[i].name;
+            if (strcmp(op->name(), name) == 0) {
+                info = &(funcs[i]);
+                break;
+            }
+        }
+
+        if (info != NULL) {
+            // dispatch to the function that implements this operation
+            (info->func)(op);
+        }
+    }
+}
+
+void AttachListener::init() {
+    std::thread t(&attach_listener_thread_entry);
+}
 
 //static int _listener;
 //static bool _has_path;
 //static char _path[UNIX_PATH_MAX];
 int AttachListener::_listener = -1;
+bool AttachListener::_has_path;
 char AttachListener::_path[UNIX_PATH_MAX];
 
 
@@ -71,7 +124,7 @@ static void listener_cleanup() {
  * 获取client想JVM发送的指令并进行相关操作
  * @return
  */
-int AttachListener::init() {
+int AttachListener::pd_init() {
     char path[UNIX_PATH_MAX];          // socket file
     char initial_path[UNIX_PATH_MAX];  // socket file during setup
     int listener;                      // listener socket (file descriptor)
@@ -256,47 +309,4 @@ int AttachListener::write_fully(int s, char *buf, int len) {
         }
     } while (len > 0);
     return 0;
-}
-
-typedef int (*AttachOperationFunction)(AttachOperation* op);
-
-struct AttachOperationFunctionInfo {
-    const char* name;
-    AttachOperationFunction func;
-};
-
-static int load_agent_library(AttachOperation* op) {
-
-}
-
-static AttachOperationFunctionInfo funcs[] = {
-        { "load", load_agent_library },
-        { NULL,               NULL }
-};
-
-
-
-static void attach_listener_thread_entry() {
-
-    for (;;) {
-        AttachOperation* op = AttachListener::dequeue();
-        if (op == NULL) {
-            return;   // dequeue failed or shutdown
-        }
-
-        // find the function to dispatch too
-        AttachOperationFunctionInfo* info = NULL;
-        for (int i=0; funcs[i].name != NULL; i++) {
-            const char* name = funcs[i].name;
-            if (strcmp(op->name(), name) == 0) {
-                info = &(funcs[i]);
-                break;
-            }
-        }
-
-        if (info != NULL) {
-            // dispatch to the function that implements this operation
-            (info->func)(op);
-        }
-    }
 }

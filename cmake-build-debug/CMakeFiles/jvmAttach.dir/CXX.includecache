@@ -62,19 +62,3 @@ sys/stat.h
 cstring
 -
 
-/Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp
-iostream
--
-zconf.h
--
-csignal
--
-semaphore.h
--
-cstring
--
-iostream
--
-AttachListener.h
-/Users/xiangshi/Documents/workspace_c/jvmAttach/AttachListener.h
-

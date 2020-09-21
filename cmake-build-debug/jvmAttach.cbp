@@ -95,6 +95,12 @@
 		<Unit filename="/Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp">
 			<Option target="jvmAttach"/>
 		</Unit>
+		<Unit filename="/Users/xiangshi/Documents/workspace_c/jvmAttach/os.cpp">
+			<Option target="jvmAttach"/>
+		</Unit>
+		<Unit filename="/Users/xiangshi/Documents/workspace_c/jvmAttach/os.h">
+			<Option target="jvmAttach"/>
+		</Unit>
 		<Unit filename="/Users/xiangshi/Documents/workspace_c/jvmAttach/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

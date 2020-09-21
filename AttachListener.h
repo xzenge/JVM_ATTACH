@@ -37,7 +37,9 @@ private:
 public:
     static AttachOperation *dequeue();
 
-    static int init();
+    static void init();
+
+    static int pd_init();
 
     static AttachOperation *read_request(int s);
 
@@ -67,7 +69,7 @@ public:
         _listener = s;
     }
 
-    static char *path() { return _path; }
+    static char* path() { return _path; }
 
     static bool has_path() { return _has_path; }
 

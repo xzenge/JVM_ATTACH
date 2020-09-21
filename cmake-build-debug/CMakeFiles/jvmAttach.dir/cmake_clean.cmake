@@ -2,6 +2,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/jvmAttach.dir/AttachListener.cpp.o"
   "CMakeFiles/jvmAttach.dir/AttachOperation.cpp.o"
   "CMakeFiles/jvmAttach.dir/main.cpp.o"
+  "CMakeFiles/jvmAttach.dir/os.cpp.o"
   "jvmAttach"
   "jvmAttach.pdb"
 )

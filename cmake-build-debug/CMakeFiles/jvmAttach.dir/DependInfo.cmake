@@ -7,6 +7,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/xiangshi/Documents/workspace_c/jvmAttach/AttachListener.cpp" "/Users/xiangshi/Documents/workspace_c/jvmAttach/cmake-build-debug/CMakeFiles/jvmAttach.dir/AttachListener.cpp.o"
   "/Users/xiangshi/Documents/workspace_c/jvmAttach/AttachOperation.cpp" "/Users/xiangshi/Documents/workspace_c/jvmAttach/cmake-build-debug/CMakeFiles/jvmAttach.dir/AttachOperation.cpp.o"
   "/Users/xiangshi/Documents/workspace_c/jvmAttach/main.cpp" "/Users/xiangshi/Documents/workspace_c/jvmAttach/cmake-build-debug/CMakeFiles/jvmAttach.dir/main.cpp.o"
+  "/Users/xiangshi/Documents/workspace_c/jvmAttach/os.cpp" "/Users/xiangshi/Documents/workspace_c/jvmAttach/cmake-build-debug/CMakeFiles/jvmAttach.dir/os.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
