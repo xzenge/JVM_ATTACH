@@ -10,10 +10,6 @@ int main() {
     int pid = (int) getpid();
     cout << "main id=" << pid << endl;
 
-//    signal(SIGBREAK, user_handler());
-//
-//    pause();
-
     os::signal_init();
 
     while (true) {}

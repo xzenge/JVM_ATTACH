@@ -35,7 +35,6 @@ static void signal_thread_entry() {
         int sig;
         {
             sig = os::signal_wait();
-//            cout << "signal_thread_entry sig:" << sig << endl;
         }
         switch (sig) {
             case SIGBREAK: {
@@ -146,10 +145,6 @@ void os::signal_notify(int signal_number) {
     //JVM中混编平台相关汇编指令实现原子操作，演示代码中不研究相关实现
     pending_signals[signal_number] = 1;
 
-//    for(int i = 0;i< NSIG + 1;i++){
-//        cout << "i=" << i << " pending_signals= " << pending_signals[i] << endl;
-//    }
-//    ::SEM_POST(sig_sem);
     semaphore_signal(sig_sem);
 }
 

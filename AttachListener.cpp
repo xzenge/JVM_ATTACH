@@ -17,9 +17,10 @@
 using namespace std;
 
 #define TEMP_PATH "/var/folders/qp/qtln82zj37l_rwmlwqrn9pzm0000gp/T"
-#define CURRENT_PROCESS_ID ""
 
-
+/**
+ * 最Java请求过来的参数进行包装类
+ */
 class ArgumentIterator {
 private:
     char *_pos;
@@ -46,16 +47,26 @@ public:
 
 typedef int (*AttachOperationFunction)(AttachOperation* op);
 
+/**
+ * 方法名和实现方法的映射关系
+ */
 struct AttachOperationFunctionInfo {
     const char* name;
     AttachOperationFunction func;
 };
 
+/**
+ * lode 方法实现类
+ * @param op
+ * @return
+ */
 static int load_agent_library(AttachOperation* op) {
     cout << " ********************  enter load_agent_library lib:" << op->arg(0)  << endl;
     return 0;
 }
-
+/**
+ * 方法定义
+ */
 static AttachOperationFunctionInfo funcs[] = {
         { "load", load_agent_library },
         { NULL,               NULL }
@@ -93,9 +104,14 @@ static void attach_listener_thread_entry() {
 
 volatile bool AttachListener::_initialized;
 
+/**
+ * 初始化attach监听
+ * @return
+ */
 bool AttachListener::init() {
+    //如果已经启动attach监听则不需要再执行
     if (is_initialized()) {
-        return false;               // initialized at startup or already initialized
+        return false;
     }
     char path[PATH_MAX + 1];
     int ret;
@@ -105,20 +121,14 @@ bool AttachListener::init() {
              TEMP_PATH, getpid());
     RESTARTABLE(::stat(path, &st), ret);
     if (ret == 0) {
-        // simple check to avoid starting the attach mechanism when
-        // a bogus user creates the file
-//        if (st.st_uid == geteuid()) {
-            pthread_t tids;
-            int ret = pthread_create(&tids, NULL, reinterpret_cast<void *(*)(void *)>(attach_listener_thread_entry), NULL);
-            return true;
-//        }
+        //java侧如果有新建attach_pid文件，则开启一个线程简历socket链接
+        pthread_t tids;
+        int ret = pthread_create(&tids, NULL, reinterpret_cast<void *(*)(void *)>(attach_listener_thread_entry), NULL);
+        return true;
     }
 
 }
 
-//static int _listener;
-//static bool _has_path;
-//static char _path[UNIX_PATH_MAX];
 int AttachListener::_listener = -1;
 bool AttachListener::_has_path;
 char AttachListener::_path[UNIX_PATH_MAX];
@@ -204,7 +214,10 @@ int AttachListener::pd_init() {
     return 0;
 }
 
-
+/**
+ * accept domain socket，读取到内容后生成对应的AttachOperation
+ * @return
+ */
 AttachOperation *AttachListener::dequeue() {
     for (;;) {
         int s;
@@ -228,12 +241,13 @@ AttachOperation *AttachListener::dequeue() {
         uid_t euid = geteuid();
         gid_t egid = getegid();
 
+        //检查DS文件是否为同一个用户创建
         if (puid != euid || pgid != egid) {
             ::close(s);
             continue;
         }
 
-        // peer credential look okay so we read the request
+        // 读取文件内容，生成AttachOperation对象
         AttachOperation *op = read_request(s);
         if (op == NULL) {
             ::close(s);
@@ -244,6 +258,11 @@ AttachOperation *AttachListener::dequeue() {
     }
 }
 
+/**
+ * 读取请求内容
+ * @param s
+ * @return
+ */
 AttachOperation *AttachListener::read_request(int s) {
     cout << "enter read_request" << endl;
     char ver_str[8];
@@ -267,20 +286,9 @@ AttachOperation *AttachListener::read_request(int s) {
         }
         for (int i = 0; i < n; i++) {
             if (buf[off + i] == 0) {
-                // EOS found
+                // EOS 为 0
                 str_count++;
 
-                // The first string is <ver> so check it now to
-                // check for protocol mis-match
-                if (str_count == 1) {
-//                    if ((strlen(buf) != strlen(ver_str)) ||
-//                        (atoi(buf) != ATTACH_PROTOCOL_VER)) {
-//                        char msg[32];
-//                        sprintf(msg, "%d\n", ATTACH_ERROR_BADVERSION);
-//                        write_fully(s, msg, strlen(msg));
-//                        return NULL;
-//                    }
-                }
             }
         }
         off += n;
